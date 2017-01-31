@@ -264,7 +264,7 @@ def getCF(cfurl, links):
       sess = requests.session()
       p = urlparse(cfurl)
       mnt = p.scheme + '://'
-      sess.mount(mnt, cfscrape.CloudflareAdapter())
+      sess.mount(mnt, cfscrape.CloudflareScraper())
       sess.get(cfurl)
       #sess.cookies
       l = sess.get(cfurl)
@@ -276,7 +276,7 @@ def getCF(cfurl, links):
             ct = u''.join(t).encode('utf-8').strip()
             print('\033[34;1m' + str(cs) + '\033[0m')
             print('\033[32;1m' + str(ct) + '\033[0m')
-         cookies = "\"cf_clearance\"=\"%s\"" % sess.cookies.get('cf_clearance')
+         cookies = "\"cf_clearance\"=\"%s\"" % (sess.cookies.get('cf_clearance') if sess.cookies.get('cf_clearance') != None else "")
          if sess.cookies.get('__cfduid'):
             cookies = cookies + ";\"__cfduid\"=\"%s\"" % sess.cookies.get('__cfduid')
       else:
@@ -436,7 +436,7 @@ def getCF(cfurl, links):
          checkresume = '2'
          dld = 0
          df = open(savefile, 'wb+')
-         resumeheader = None
+         resumeheader = {}
          dlmsg = "\nwriting content to \'download\' directory as file %s. this may take awhile depending on file size... \n" % outfile
 
       print(dlmsg)
